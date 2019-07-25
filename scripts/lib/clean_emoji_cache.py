@@ -9,12 +9,10 @@ ZULIP_PATH = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__f
 sys.path.append(ZULIP_PATH)
 from scripts.lib.zulip_tools import \
     get_environment, get_recent_deployments, \
-    parse_cache_script_args, purge_unused_caches
+    parse_cache_script_args, purge_unused_caches, get_cache_path
 
 ENV = get_environment()
-EMOJI_CACHE_PATH = "/srv/zulip-emoji-cache"
-if ENV == "travis":
-    EMOJI_CACHE_PATH = os.path.join(os.environ["HOME"], "zulip-emoji-cache")
+EMOJI_CACHE_PATH = get_cache_path(ENV, ZULIP_PATH, "/srv/zulip-emoji-cache")
 
 def get_caches_in_use(threshold_days):
     # type: (int) -> Set[str]

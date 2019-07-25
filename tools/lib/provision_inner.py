@@ -9,7 +9,8 @@ ZULIP_PATH = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__f
 
 sys.path.append(ZULIP_PATH)
 from scripts.lib.zulip_tools import run, run_as_root, OKBLUE, ENDC, \
-    get_dev_uuid_var_path, file_or_package_hash_updated
+    get_dev_uuid_var_path, file_or_package_hash_updated, \
+    get_environment, get_cache_path
 
 from version import PROVISION_VERSION
 
@@ -23,15 +24,10 @@ TEST_UPLOAD_DIR_PATH = os.path.join(VAR_DIR_PATH, 'test_uploads')
 COVERAGE_DIR_PATH = os.path.join(VAR_DIR_PATH, 'coverage')
 NODE_TEST_COVERAGE_DIR_PATH = os.path.join(VAR_DIR_PATH, 'node-coverage')
 XUNIT_XML_TEST_RESULTS_DIR_PATH = os.path.join(VAR_DIR_PATH, 'xunit-test-results')
-
-is_travis = 'TRAVIS' in os.environ
+ENV = get_environment()
 
 # TODO: De-duplicate this with emoji_dump.py
-EMOJI_CACHE_PATH = "/srv/zulip-emoji-cache"
-if is_travis:
-    # In Travis CI, we don't have root access
-    EMOJI_CACHE_PATH = "/home/travis/zulip-emoji-cache"
-
+EMOJI_CACHE_PATH = get_cache_path(ENV, ZULIP_PATH, "/srv/zulip-emoji-cache")
 UUID_VAR_PATH = get_dev_uuid_var_path()
 
 user_id = os.getuid()

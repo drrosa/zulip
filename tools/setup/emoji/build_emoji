@@ -17,10 +17,12 @@ from emoji_names import EMOJI_NAME_MAPS
 ZULIP_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../../')
 sys.path.append(ZULIP_PATH)
 
-from scripts.lib.zulip_tools import generate_sha1sum_emoji
-
+from scripts.lib.zulip_tools import \
+    generate_sha1sum_emoji, get_environment, get_cache_path
+    
+ENV = get_environment()
 TARGET_EMOJI_DUMP = os.path.join(ZULIP_PATH, 'static', 'generated', 'emoji')
-EMOJI_CACHE_PATH = "/srv/zulip-emoji-cache"
+EMOJI_CACHE_PATH = get_cache_path(ENV, ZULIP_PATH, "/srv/zulip-emoji-cache")
 EMOJI_SCRIPT_DIR_PATH = os.path.join(ZULIP_PATH, 'tools', 'setup', 'emoji')
 NODE_MODULES_PATH = os.path.join(ZULIP_PATH, 'node_modules')
 

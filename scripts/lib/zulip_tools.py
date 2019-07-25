@@ -226,6 +226,17 @@ def get_environment():
         return "travis"
     return "dev"
 
+def get_cache_path(env, zulip_path, cache_path):
+    # type: () -> path
+    cache_dir = os.path.basename(cache_path)
+    if env == "travis":
+    # In Travis CI, we don't have root access
+        return os.path.join(os.environ["HOME"], cache_dir)
+    if env == "dev" and os.environ.get("DOCKER"):
+    # In a docker container, we need a persistent volume instead of /srv
+        return os.path.join(zulip_path, "cache", cache_dir)
+    return cache_path
+
 def get_recent_deployments(threshold_days):
     # type: (int) -> Set[str]
     # Returns a list of deployments not older than threshold days

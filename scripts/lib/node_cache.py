@@ -4,19 +4,15 @@ import hashlib
 import json
 
 from typing import Optional, List, IO, Any
-from scripts.lib.zulip_tools import subprocess_text_output, run
+from scripts.lib.zulip_tools import subprocess_text_output, run, \
+    get_environment, get_cache_path 
 
 ZULIP_PATH = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-ZULIP_SRV_PATH = "/srv"
-
-if 'TRAVIS' in os.environ:
-    # In Travis CI, we don't have root access
-    ZULIP_SRV_PATH = "/home/travis"
-
-
-NODE_MODULES_CACHE_PATH = os.path.join(ZULIP_SRV_PATH, 'zulip-npm-cache')
+ENV = get_environment()
+ZULIP_SRV_PATH = "/srv" if ENV != "travis" else "/home/travis"
 YARN_BIN = os.path.join(ZULIP_SRV_PATH, 'zulip-yarn/bin/yarn')
 YARN_PACKAGE_JSON = os.path.join(ZULIP_SRV_PATH, 'zulip-yarn/package.json')
+NODE_MODULES_CACHE_PATH = get_cache_path(ENV, ZULIP_PATH, '/srv/zulip-npm-cache')
 
 DEFAULT_PRODUCTION = False
 

@@ -10,12 +10,11 @@ ZULIP_PATH = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__f
 sys.path.append(ZULIP_PATH)
 from scripts.lib.zulip_tools import \
     get_environment, get_recent_deployments, parse_cache_script_args, \
-    purge_unused_caches
+    purge_unused_caches, get_cache_path
 
 ENV = get_environment()
-NODE_MODULES_CACHE_PATH = "/srv/zulip-npm-cache"
+NODE_MODULES_CACHE_PATH = get_cache_path(ENV, ZULIP_PATH, "/srv/zulip-npm-cache")
 if ENV == "travis":
-    NODE_MODULES_CACHE_PATH = os.path.join(os.environ["HOME"], "zulip-npm-cache")
     try:
         subprocess.check_output(["/home/travis/zulip-yarn/bin/yarn", '--version'])
     except OSError:
