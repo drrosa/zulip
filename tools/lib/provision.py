@@ -15,7 +15,7 @@ ZULIP_PATH = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__f
 sys.path.append(ZULIP_PATH)
 from scripts.lib.zulip_tools import run_as_root, ENDC, WARNING, \
     get_dev_uuid_var_path, FAIL, parse_lsb_release, \
-    overwrite_symlink
+    overwrite_symlink, get_environment
 from scripts.lib.setup_venv import (
     VENV_DEPENDENCIES, REDHAT_VENV_DEPENDENCIES,
     THUMBOR_VENV_DEPENDENCIES, YUM_THUMBOR_VENV_DEPENDENCIES,
@@ -53,8 +53,9 @@ SUPPORTED_PLATFORMS = {
 
 VAR_DIR_PATH = os.path.join(ZULIP_PATH, 'var')
 
-is_travis = 'TRAVIS' in os.environ
-is_circleci = 'CIRCLECI' in os.environ
+is_travis = get_environment() == "travis"
+is_circleci = get_environment() == "circleci"
+is_docker = get_environment() == "dev" and os.environ.get("DOCKER")
 
 if not os.path.exists(os.path.join(ZULIP_PATH, ".git")):
     print(FAIL + "Error: No Zulip git repository present!" + ENDC)
@@ -137,6 +138,7 @@ POSTGRES_VERSION_MAP = {
 POSTGRES_VERSION = POSTGRES_VERSION_MAP[codename]
 
 COMMON_DEPENDENCIES = [
+    "openssl",
     "memcached",
     "rabbitmq-server",
     "supervisor",
@@ -416,7 +418,7 @@ def main(options):
 
     run_as_root(["cp", REPO_STOPWORDS_PATH, TSEARCH_STOPWORDS_PATH])
 
-    if is_circleci or (is_travis and not options.is_production_travis):
+    if is_docker or is_circleci or (is_travis and not options.is_production_travis):
         run_as_root(["service", "rabbitmq-server", "restart"])
         run_as_root(["service", "redis-server", "restart"])
         run_as_root(["service", "memcached", "restart"])
