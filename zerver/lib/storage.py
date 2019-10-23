@@ -1,5 +1,5 @@
 # Useful reading is:
-# https://zulip.readthedocs.io/en/latest/subsystems/html-css.html#front-end-build-process
+# https://zulip.readthedocs.io/en/latest/subsystems/html-css.html#static-asset-pipeline
 
 import os
 from typing import Optional
